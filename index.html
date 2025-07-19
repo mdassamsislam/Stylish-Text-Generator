@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Stylish Text Generator</title>
+  <style>
+    body {
+      background: #121212;
+      color: #f0f0f0;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 2rem;
+    }
+    h1 {
+      color: #00ffd5;
+    }
+    input {
+      padding: 10px;
+      font-size: 16px;
+      width: 80%;
+      max-width: 500px;
+      margin-bottom: 20px;
+      border-radius: 5px;
+      border: none;
+      outline: none;
+    }
+    .styled-text {
+      background: #1f1f1f;
+      margin: 10px auto;
+      padding: 10px;
+      border-radius: 8px;
+      max-width: 600px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .copy-btn {
+      background: #00ffd5;
+      color: #000;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .copy-btn:hover {
+      background: #00c0a7;
+    }
+  </style>
+</head>
+<body>
+  <h1>Stylish Text Generator</h1>
+  <input type="text" id="inputText" placeholder="Enter your text here" oninput="generateStyles()" />
+  <div id="output"></div>
+
+  <script>
+    const outputArea = document.getElementById("output");
+
+    const fancyFonts = {
+      "Bold": str => str.replace(/./g, c => {
+        const base = "𝐚".codePointAt(0);
+        if (/[a-z]/.test(c)) return String.fromCodePoint(base + c.charCodeAt(0) - 97);
+        if (/[A-Z]/.test(c)) return String.fromCodePoint("𝐀".codePointAt(0) + c.charCodeAt(0) - 65);
+        return c;
+      }),
+      "Italic": str => str.replace(/./g, c => {
+        const lower = "𝘢".codePointAt(0);
+        const upper = "𝘈".codePointAt(0);
+        if (/[a-z]/.test(c)) return String.fromCodePoint(lower + c.charCodeAt(0) - 97);
+        if (/[A-Z]/.test(c)) return String.fromCodePoint(upper + c.charCodeAt(0) - 65);
+        return c;
+      }),
+      "Bold Italic": str => str.replace(/./g, c => {
+        const lower = "𝙖".codePointAt(0);
+        const upper = "𝘼".codePointAt(0);
+        if (/[a-z]/.test(c)) return String.fromCodePoint(lower + c.charCodeAt(0) - 97);
+        if (/[A-Z]/.test(c)) return String.fromCodePoint(upper + c.charCodeAt(0) - 65);
+        return c;
+      }),
+      "Monospace": str => str.replace(/./g, c => {
+        const lower = "𝚊".codePointAt(0);
+        const upper = "𝙰".codePointAt(0);
+        if (/[a-z]/.test(c)) return String.fromCodePoint(lower + c.charCodeAt(0) - 97);
+        if (/[A-Z]/.test(c)) return String.fromCodePoint(upper + c.charCodeAt(0) - 65);
+        return c;
+      }),
+      "Upside Down": str => str.split("").reverse().map(c => {
+        const map = {
+          a: "ɐ", b: "q", c: "ɔ", d: "p", e: "ǝ", f: "ɟ", g: "ƃ",
+          h: "ɥ", i: "ᴉ", j: "ɾ", k: "ʞ", l: "ʃ", m: "ɯ", n: "u",
+          o: "o", p: "d", q: "b", r: "ɹ", s: "s", t: "ʇ", u: "n",
+          v: "ʌ", w: "ʍ", x: "x", y: "ʎ", z: "z",
+          A: "∀", B: "𐐒", C: "Ɔ", D: "◖", E: "Ǝ", F: "Ⅎ", G: "⅁",
+          H: "H", I: "I", J: "ſ", K: "ʞ", L: "˥", M: "W", N: "N",
+          O: "O", P: "Ԁ", Q: "Ό", R: "ᴚ", S: "S", T: "┴", U: "∩",
+          V: "Λ", W: "M", X: "X", Y: "⅄", Z: "Z", ".": "˙", "?": "¿", "!": "¡"
+        };
+        return map[c] || c;
+      }).join(""),
+      "Mirror": str => str.split("").map(c => {
+        const mirrorMap = {
+          a: 'ɒ', b: 'd', c: 'ɔ', d: 'b', e: 'ɘ', f: 'Ꮈ', g: 'ǫ',
+          h: 'ʜ', i: 'i', j: 'Ⴑ', k: 'ʞ', l: 'ʃ', m: 'm', n: 'ᴎ',
+          o: 'o', p: 'q', q: 'p', r: 'ᴙ', s: 's', t: 'ƚ', u: 'u',
+          v: 'v', w: 'ʍ', x: 'x', y: 'ʎ', z: 'z'
+        };
+        return mirrorMap[c.toLowerCase()] || c;
+      }).join(""),
+      "Wide Spacing": str => str.split("").join(" "),
+      "Cursive": str => str.replace(/[a-z]/gi, c => {
+        const cursives = {
+          a: '𝓪', b: '𝓫', c: '𝓬', d: '𝓭', e: '𝓮', f: '𝓯', g: '𝓰',
+          h: '𝓱', i: '𝓲', j: '𝓳', k: '𝓴', l: '𝓵', m: '𝓶', n: '𝓷',
+          o: '𝓸', p: '𝓹', q: '𝓺', r: '𝓻', s: '𝓼', t: '𝓽', u: '𝓾',
+          v: '𝓿', w: '𝔀', x: '𝔁', y: '𝔂', z: '𝔃'
+        };
+        return cursives[c.toLowerCase()] || c;
+      }),
+      "Superscript": str => str.replace(/\d|[a-z]/gi, c => {
+        const map = {
+          a: "ᵃ", b: "ᵇ", c: "ᶜ", d: "ᵈ", e: "ᵉ", f: "ᶠ", g: "ᵍ",
+          h: "ʰ", i: "ⁱ", j: "ʲ", k: "ᵏ", l: "ˡ", m: "ᵐ", n: "ⁿ",
+          o: "ᵒ", p: "ᵖ", q: "ᑫ", r: "ʳ", s: "ˢ", t: "ᵗ", u: "ᵘ",
+          v: "ᵛ", w: "ʷ", x: "ˣ", y: "ʸ", z: "ᶻ",
+          0: "⁰", 1: "¹", 2: "²", 3: "³", 4: "⁴", 5: "⁵", 6: "⁶",
+          7: "⁷", 8: "⁸", 9: "⁹"
+        };
+        return map[c.toLowerCase()] || c;
+      }),
+      "Subscript": str => str.replace(/\d|[a-z]/gi, c => {
+        const map = {
+          a: "ₐ", e: "ₑ", h: "ₕ", i: "ᵢ", j: "ⱼ", k: "ₖ", l: "ₗ",
+          m: "ₘ", n: "ₙ", o: "ₒ", p: "ₚ", r: "ᵣ", s: "ₛ", t: "ₜ",
+          u: "ᵤ", v: "ᵥ", x: "ₓ",
+          0: "₀", 1: "₁", 2: "₂", 3: "₃", 4: "₄", 5: "₅", 6: "₆",
+          7: "₇", 8: "₈", 9: "₉"
+        };
+        return map[c.toLowerCase()] || c;
+      }),
+      "Leet Speak": str => str.replace(/[a-z]/gi, c => {
+        const map = {
+          a: "4", b: "8", c: "<", d: "Ð", e: "3", f: "ƒ", g: "9",
+          h: "#", i: "1", j: "_|", k: "|<", l: "1", m: "/\\/\\",
+          n: "|\\|", o: "0", p: "|2", q: "0_", r: "Я", s: "5",
+          t: "7", u: "(_)", v: "\\/", w: "\\/\\/", x: "><", y: "`/",
+          z: "2"
+        };
+        return map[c.toLowerCase()] || c;
+      }),
+      "Inverted Caps": str => str.split('').map((c, i) => i % 2 ? c.toLowerCase() : c.toUpperCase()).join('')
+    };
+
+    function generateStyles() {
+      const input = document.getElementById("inputText").value;
+      outputArea.innerHTML = "";
+
+      for (const [name, transform] of Object.entries(fancyFonts)) {
+        const styled = transform(input);
+
+        const div = document.createElement("div");
+        div.className = "styled-text";
+
+        const textSpan = document.createElement("span");
+        textSpan.innerHTML = `<strong>${name}:</strong> ${styled}`;
+
+        const copyBtn = document.createElement("button");
+        copyBtn.className = "copy-btn";
+        copyBtn.innerText = "Copy";
+        copyBtn.setAttribute("data-copy", styled);
+        copyBtn.addEventListener("click", () => {
+          navigator.clipboard.writeText(copyBtn.getAttribute("data-copy"))
+            .then(() => {
+              copyBtn.innerText = "✓ Copied!";
+              setTimeout(() => copyBtn.innerText = "Copy", 1000);
+            });
+        });
+
+        div.appendChild(textSpan);
+        div.appendChild(copyBtn);
+        outputArea.appendChild(div);
+      }
+    }
+  </script>
+</body>
+</html>
